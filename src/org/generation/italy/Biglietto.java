@@ -6,19 +6,19 @@ public class Biglietto {
 	// Room 1
 	// Constants
 	static final BigDecimal KM_PRICE = new BigDecimal("0.21");
-	static final BigDecimal DISCOUNT_OVER65 = new BigDecimal("0.4");
-	static final BigDecimal DISCOUNT_UNDER12 = new BigDecimal("0.2");
+	static final BigDecimal DISCOUNT_OVER65 = new BigDecimal("0.6");
+	static final BigDecimal DISCOUNT_UNDER12 = new BigDecimal("0.8");
 
 	// Attributes
 	private int age, km;
 
 	// Methods
 	public Biglietto(int age, int km) throws Exception {
-		if (isValidAge() && isValidKm()) {
-			this.age = age;
-			this.km = km;
-		} else
+		this.age = age;
+		this.km = km;
+		if (!isValidAge() || !isValidKm()) {
 			throw new Exception("Invalid value");
+		}
 	}
 
 	public int getAge() {
@@ -50,7 +50,7 @@ public class Biglietto {
 	}
 
 	private boolean isValidAge() {
-		if (age >= 0 && age < 65)
+		if (age > 0 && age <= 150)
 			return true;
 		else
 			return false;
@@ -62,15 +62,15 @@ public class Biglietto {
 		else
 			return false;
 	}
-	
+
 	public BigDecimal calculatePrice() {
 		return calculateDiscount().multiply(BigDecimal.valueOf(km));
 	}
-	
+
 	private BigDecimal calculateDiscount() {
-		if(age <= 12)
+		if (age <= 12)
 			return KM_PRICE.multiply(DISCOUNT_UNDER12);
-		else if(age >65)
+		else if (age >= 65)
 			return KM_PRICE.multiply(DISCOUNT_OVER65);
 		else
 			return KM_PRICE;
