@@ -1,6 +1,7 @@
 package org.generation.italy;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class Biglietto {
 	// Room 1
@@ -8,14 +9,20 @@ public class Biglietto {
 	static final BigDecimal KM_PRICE = new BigDecimal("0.21");
 	static final BigDecimal DISCOUNT_OVER65 = new BigDecimal("0.6");
 	static final BigDecimal DISCOUNT_UNDER12 = new BigDecimal("0.8");
+	static final int NORMAL_DUR = 30;
+	static final int FLEXIBLE_DUR = 90;
 
 	// Attributes
 	private int age, km;
+	private LocalDate date;
+	private boolean flexible;
 
 	// Methods
-	public Biglietto(int age, int km) throws Exception {
+	public Biglietto(int age, int km, boolean flexible) throws Exception {
 		this.age = age;
 		this.km = km;
+		this.flexible = flexible;
+		date = LocalDate.now();
 		if (!isValidAge() || !isValidKm()) {
 			throw new Exception("Invalid value");
 		}
@@ -64,7 +71,10 @@ public class Biglietto {
 	}
 
 	public BigDecimal calculatePrice() {
-		return calculateDiscount().multiply(BigDecimal.valueOf(km));
+		if(flexible)
+			return calculateDiscount().multiply(BigDecimal.valueOf(km).multiply(BigDecimal.valueOf(1.10)));
+		else
+			return calculateDiscount().multiply(BigDecimal.valueOf(km));
 	}
 
 	private BigDecimal calculateDiscount() {
@@ -74,5 +84,12 @@ public class Biglietto {
 			return KM_PRICE.multiply(DISCOUNT_OVER65);
 		else
 			return KM_PRICE;
+	}
+	
+	public LocalDate calculateExpire() {
+		if(flexible)
+			return date.plusDays(FLEXIBLE_DUR);
+		else
+			return date.plusDays(NORMAL_DUR);
 	}
 }
